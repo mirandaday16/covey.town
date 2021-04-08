@@ -1,20 +1,36 @@
-import Player from "../types/Player";
+import Player from '../types/Player';
 
 export interface GameCreateRequest {
   players: Player[];
-  gameType: String;
+  gameType: string;
 }
 
 export interface GameUpdateRequest {
-  gameId: String;
+  gameId: string;
   player: Player;
-  move: String
+  move: string
 }
 
 export interface GameFindRequest {
-  gameId: String
+  gameId: string
 }
 
 export interface GameDeleteRequest {
-  gameId: String
+  gameId: string
+}
+
+export enum Cell {
+  empty,
+  xSlot,
+  oSlot,
+}
+
+export enum CheckDirection {
+  horizontal,
+  vertical,
+}
+
+export enum Players {
+  player1,
+  player2,
 }
