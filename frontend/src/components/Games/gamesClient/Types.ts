@@ -47,7 +47,7 @@ export interface GameListResponse {
   games: GameList;
 }
 
-export type GameList = { gameID: string; gameState: string }[];
+export type GameList = { gameID: string; gameState: string ; player1ID: string; gameType: string}[];
 
 export interface GameJoinRequest {
   player2: string;

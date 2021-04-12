@@ -16,6 +16,11 @@ import TTLDisplay from "./GameDisplays/TTLDisplay";
 import TTLGame from "./gamesService/TTLGame";
 import HangmanDisplay from "./GameDisplays/Hangman/HangmanDisplay";
 import HangmanGame from "./gamesService/HangmanGame";
+import useVideoContext from '../VideoCall/VideoFrontend/hooks/useVideoContext/useVideoContext';
+import Video from '../../classes/Video/Video';
+import TownSelection from '../Login/TownSelection';
+// import { Socket } from 'socket.io';
+import JoinGameListener from './gamesService/JoinGameListener';
 
 interface GameModalDialogProps {
   dialogType: string;
@@ -28,6 +33,16 @@ export default function JoinGameModalDialog({dialogType, gameId, gameType}: Game
   const controller = GameController.getInstance()
   const game = controller.findGameById(gameId)
   const [playing, setPlaying] = useState(false);
+  const [userName, setUserName] = useState<string>(Video.instance()?.userName || '');
+
+  // function townSocketAdapter(socket: Socket): JoinGameListener {
+  //   return {
+  //     onPlayerJoined(player2: string) {
+  //       socket.emit('player2', player2);
+  //     },
+  //   };
+  // }
+
   return (
     <>
       <MenuItem data-testid='openMenuButton' onClick={() => onOpen()}>
@@ -65,9 +80,14 @@ export default function JoinGameModalDialog({dialogType, gameId, gameType}: Game
               <Button className="games-padded-asset" colorScheme="green"
                       onClick={() => {
                         //  TODO: get player 2's username
-                        game?.playerJoin("");
+                        // Trying with username import from TownSelection
+                        game?.playerJoin(userName);
+                        controller.joinGame({player2: userName, gameID: gameId});
+                        // const listener = townSocketAdapter(socket);
+                        // controller.addTownListener(listener);
                         setPlaying(true)
                       }
+                      // this is where the fun begins
                       }>Join Game</Button>
               <Button className="games-padded-asset" colorScheme="blue" mr={3} onClick={onClose}>
                 Close
@@ -80,7 +100,7 @@ export default function JoinGameModalDialog({dialogType, gameId, gameType}: Game
           {
             playing &&
             //  TODO: Uncomment this when actually connected to game!
-            // game &&
+            game &&
             <>
               <div className="col-12">
                 <h1 className="games-headline">

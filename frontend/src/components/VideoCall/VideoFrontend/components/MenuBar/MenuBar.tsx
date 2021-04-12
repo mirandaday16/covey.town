@@ -13,9 +13,10 @@ import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
 import TownSettings from '../../../../Login/TownSettings';
-import MenuContainer from '@material-ui/core/Menu';
+// import MenuContainer from '@material-ui/core/Menu';
 import JoinGameModalDialog from "../../../../Games/JoinGameModalDialog";
 import CreateGameModalDialog from "../../../../Games/CreateGameModalDialog";
+import BrowseOpenGamesModal from "../../../../Games/BrowseOpenGamesModal";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   container: {
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export default function MenuBar(props: { setMediaError?(error: Error): void }) {
+export default function MenuBar(props: { setMediaError?(error: Error): void, townInfo: {currentTownID: string} }) {
   const classes = useStyles();
   const { isSharingScreen, toggleScreenShare } = useVideoContext();
   const roomState = useRoomState();
@@ -96,7 +97,8 @@ export default function MenuBar(props: { setMediaError?(error: Error): void }) {
                 <TownSettings />
                 {/*TODO: Remove these from menu bar!*/}
                 <JoinGameModalDialog dialogType={"joining"} gameType={"Hangman"} gameId={"1"}/>
-                <CreateGameModalDialog/>
+                <CreateGameModalDialog currentTownID = {props.townInfo.currentTownID}/>
+                <BrowseOpenGamesModal/>
                 <Menu />
                 <EndCallButton />
               </Grid>

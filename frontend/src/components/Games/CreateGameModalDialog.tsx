@@ -20,9 +20,11 @@ import HangmanGame from "./gamesService/HangmanGame";
 import TTLDisplay from "./GameDisplays/TTLDisplay";
 import HangmanDisplay from "./GameDisplays/Hangman/HangmanDisplay";
 import GameController from "./gamesService/GameController";
+import CoveyTownsStore from "./gamesService/CoveyTownsStore";
 import {GameCreateRequest} from "./gamesClient/Types";
 
-export default function CreateGameModalDialog(): JSX.Element {
+
+export default function CreateGameModalDialog(currentTownID : {currentTownID: string}): JSX.Element {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [gameSelection, setGameSelection] = useState('')
   const [hangmanWord, setHangmanWord] = useState('')
@@ -31,14 +33,14 @@ export default function CreateGameModalDialog(): JSX.Element {
   const [lie, setLie] = useState('')
   const [playing, setPlaying] = useState(false)
   const [game, setGame] = useState<TTLGame | HangmanGame | null>(null)
+  const townController = CoveyTownsStore.getInstance();
   const controller = GameController.getInstance()
-  const toast = useToast()
+  const toast = useToast();
 
   const getNewGame = async (requestData : GameCreateRequest) => {
-    const newGameID = await controller.createGame(requestData)
-      .then(response => response.response?.gameID);
+    const newGameID = (await townController.createGame(requestData, currentTownID.currentTownID)).response?.gameID;
     if (newGameID !== undefined) {
-      return controller.findGameById(newGameID)
+      return townController.findGameById(newGameID)
     }
     return undefined
   }
@@ -208,6 +210,7 @@ export default function CreateGameModalDialog(): JSX.Element {
                           player1: "", gameType: gameSelection, initialGameState:
                             {word: hangmanWord}
                         });
+                        console.log(newGame);
                         if (newGame !== undefined) {
                           setGame(newGame);
                         }
@@ -220,7 +223,9 @@ export default function CreateGameModalDialog(): JSX.Element {
                         }
                       }
                       setPlaying(true);
-                    }}>
+                    }
+                    }>
+
               Create Game
             </Button>
               <Button className="games-padded-asset" colorScheme="red" mr={3} onClick={onClose}>

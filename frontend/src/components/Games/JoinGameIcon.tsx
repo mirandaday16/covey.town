@@ -12,7 +12,6 @@ export default function JoinGameIcon({gameType, gameId}: JoinGameIconProps) : JS
   const game = controller.findGameById(gameId)
   return (
     <div>
-    {/*  TODO: This needs to be a box with correct icon */}
       {
         game !== undefined && game.player2ID === "" &&
           // TODO: how to get player ID/username?
@@ -27,6 +26,7 @@ export default function JoinGameIcon({gameType, gameId}: JoinGameIconProps) : JS
                            gameType={gameType}
                            />
     }
+    Hangman
     </div>
 
   )

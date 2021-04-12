@@ -14,13 +14,19 @@ import {
 } from '../gamesClient/Types';
 import HangmanGame from './HangmanGame';
 import TTLGame from './TTLGame';
+import JoinGameListener from './JoinGameListener';
+import CoveyTownController from './CoveyTownController';
 
 
 export default class GameController {
 
   private static _instance: GameController;
 
+  private static _coveyInstance: CoveyTownController;
+
   private _gamesList: (TTLGame | HangmanGame )[] = [];
+
+  private _listeners: JoinGameListener[] = [];
 
   get gamesList(): (TTLGame | HangmanGame)[] {
     return this._gamesList;
@@ -36,6 +42,13 @@ export default class GameController {
     }
     return GameController._instance;
   }
+
+  // static getCoveyInstance(): CoveyTownController {
+  //   if (CoveyTownController. === undefined) {
+  //     CoveyTownController._coveyInstance = new GameController();
+  //   }
+  //   return GameController._instance;
+  // }
 
   /**
    * Creates a new game session initialized by one player
@@ -82,6 +95,7 @@ export default class GameController {
       };
     }
     targetGame.playerJoin(player2);
+    this._listeners.forEach((listener) => listener.onPlayerJoined(player2));
     return {
       isOK: true,
       response: {
@@ -128,9 +142,12 @@ export default class GameController {
    *
    */
   async findAllGames(): Promise<ResponseEnvelope<GameListResponse>>  {
+    
     const games = this.gamesList.map(game => ({
         gameID: game.id,
         gameState: game.gameState,
+        player1ID: game.player1ID,
+        gameType: game.gameType
       }),
     );
     return {
@@ -172,6 +189,14 @@ export default class GameController {
       response: {},
       message: !success ? 'Game to delete not found. Game ID may be invalid.' : undefined,
     };
+  }
+
+  addTownListener(listener: JoinGameListener): void {
+    this._listeners.push(listener);
+  }
+
+  removeTownListener(listener: JoinGameListener): void {
+    this._listeners = this._listeners.filter((v) => v !== listener);
   }
 }
 

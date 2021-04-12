@@ -41,6 +41,8 @@ export default class HangmanGame implements IGame {
 
   rightLeg : string;
 
+  gameType: string;
+
 
   constructor(player1ID:string, initialGameData: HangmanWord ) {
     this.gameStartMessage = 'Choose a letter!';
@@ -57,6 +59,7 @@ export default class HangmanGame implements IGame {
     this.rightArm = 'RightArm';
     this.leftLeg = 'LeftLeg';
     this.rightLeg = 'RightLeg';
+    this.gameType = 'Hangman';
 
   }
 
@@ -128,5 +131,6 @@ export default class HangmanGame implements IGame {
       throw new Error('Game is already full');
     }
   }
+
 
 }

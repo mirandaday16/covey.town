@@ -37,6 +37,7 @@ interface Props {
   hexColour?: string;
   preferredMode: 'sidebar' | 'fullwidth';
   onPresentingChanged?(presenting: boolean): void;
+  townInfo: {currentTownID: string};
 }
 
 export default function VideoGrid(props: Props) {
@@ -126,7 +127,9 @@ export default function VideoGrid(props: Props) {
             <ReconnectingNotification />
             <MobileTopMenuBar />
             <Room />
-            <MenuBar setMediaError={setMediaError} />
+            <MenuBar 
+            townInfo = {props.townInfo}
+            setMediaError={setMediaError} />
           </Main>
         )}
         <MediaErrorSnackbar error={mediaError} dismissError={() => setMediaError(undefined)} />

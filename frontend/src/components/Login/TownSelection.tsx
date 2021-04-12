@@ -80,6 +80,7 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
         assert(initData.providerVideoToken);
         await connect(initData.providerVideoToken);
       }
+      console.log("HELLO");
     } catch (err) {
       toast({
         title: 'Unable to connect to Towns Service',

@@ -22,6 +22,8 @@ export default class TTLGame implements IGame {
 
   alreadyGuessed : number[];
 
+  gameType: string;
+
 
   get id(): string {
     return this._id;
@@ -41,6 +43,7 @@ export default class TTLGame implements IGame {
     this.gameState = this.initializeGame();
     this.player2ID = '';
     this.alreadyGuessed = [];
+    this.gameType = 'Two Truths and a Lie';
 
   }
 

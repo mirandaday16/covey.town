@@ -201,6 +201,7 @@ async function GameController(initData: TownJoinResponse,
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
+  const townID = defaultAppState().currentTownID;
 
   const setupGameController = useCallback(async (initData: TownJoinResponse) => {
     await GameController(initData, dispatchAppUpdate);
@@ -225,7 +226,9 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     return (
       <div>
         <WorldMap />
-        <VideoOverlay preferredMode="fullwidth" />
+        <VideoOverlay 
+        townInfo= {{currentTownID: townID}}
+        preferredMode="fullwidth" />
       </div>
     );
   }, [setupGameController, appState.sessionToken, videoInstance]);
