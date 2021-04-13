@@ -1,10 +1,13 @@
 import { customAlphabet, nanoid } from 'nanoid';
-import { UserLocation } from '../CoveyTypes';
+import { GameList, UserLocation, GameCreateRequest, GameCreateResponse, HangmanWord, ResponseEnvelope, TTLChoices } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
 import TwilioVideo from './TwilioVideo';
 import IVideoClient from './IVideoClient';
+import HangmanGame from '../games/HangmanGame';
+import TTLGame from '../games/TTLGame';
+import { HangmanPlayer1Move } from '../client/Types';
 
 const friendlyNanoID = customAlphabet('1234567890ABCDEF', 8);
 
@@ -48,8 +51,20 @@ export default class CoveyTownController {
     return this._coveyTownID;
   }
 
+  private _gamesList: (TTLGame | HangmanGame )[] = [];
+
+  get gamesList(): (TTLGame | HangmanGame)[] {
+    return this._gamesList;
+  }
+
+  set gamesList(value: (TTLGame | HangmanGame )[]) {
+    this._gamesList = value;
+  }
+
   /** The list of players currently in the town * */
   private _players: Player[] = [];
+
+
 
   /** The list of valid sessions for this town * */
   private _sessions: PlayerSession[] = [];
@@ -78,6 +93,7 @@ export default class CoveyTownController {
     this._friendlyName = friendlyName;
   }
 
+  
   /**
    * Adds a player to this Covey Town, provisioning the necessary credentials for the
    * player, and returning them
@@ -118,6 +134,10 @@ export default class CoveyTownController {
   updatePlayerLocation(player: Player, location: UserLocation): void {
     player.updateLocation(location);
     this._listeners.forEach((listener) => listener.onPlayerMoved(player));
+  }
+
+  createTownGame(gameID: string): void {
+    this._listeners.forEach((listener) => listener.onGameCreated(gameID));
   }
 
   /**

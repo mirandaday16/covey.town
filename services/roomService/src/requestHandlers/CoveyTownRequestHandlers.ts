@@ -190,6 +190,8 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
       socket.emit('townClosing');
       socket.disconnect(true);
     },
+    onGameCreated() {
+    },
   };
 }
 

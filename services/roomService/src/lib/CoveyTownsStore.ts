@@ -1,5 +1,7 @@
 import CoveyTownController from './CoveyTownController';
-import { CoveyTownList } from '../CoveyTypes';
+import { CoveyTownList, GameCreateRequest, GameCreateResponse, GameList, HangmanWord, ResponseEnvelope, TTLChoices } from '../CoveyTypes';
+import HangmanGame from '../games/HangmanGame';
+import TTLGame from '../games/TTLGame';
 
 function passwordMatches(provided: string, expected: string): boolean {
   if (provided === expected) {
@@ -15,6 +17,9 @@ export default class CoveyTownsStore {
   private static _instance: CoveyTownsStore;
 
   private _towns: CoveyTownController[] = [];
+
+  private _gamesList: (TTLGame | HangmanGame )[] = [];
+
 
   static getInstance(): CoveyTownsStore {
     if (CoveyTownsStore._instance === undefined) {
@@ -60,6 +65,32 @@ export default class CoveyTownsStore {
     return false;
   }
 
+  async createGame(requestData: GameCreateRequest, coveyTownID: string): Promise<ResponseEnvelope<GameCreateResponse>> {
+    const existingTown = this.getControllerForTown(coveyTownID);
+    let newGame;
+    const { player1 } = requestData;
+    const initialState = requestData.initialGameState;
+    if (requestData.gameType === 'Hangman') {
+      newGame = new HangmanGame(player1, <HangmanWord>(initialState));
+    } else if (requestData.gameType === 'TTL') {
+      newGame = new TTLGame(player1, <TTLChoices>(initialState));
+    }
+    if (newGame === undefined) {
+      return {
+        isOK: false,
+        message: 'Error: No game type specified',
+      };
+    }
+    existingTown?.createTownGame(newGame.id);
+    this._gamesList.push(newGame);
+    return {
+      isOK: true,
+      response: {
+        gameID: newGame.id,
+      },
+    };
+  }
+
   deleteTown(coveyTownID: string, coveyTownPassword: string): boolean {
     const existingTown = this.getControllerForTown(coveyTownID);
     if (existingTown && passwordMatches(coveyTownPassword, existingTown.townUpdatePassword)) {
@@ -69,5 +100,7 @@ export default class CoveyTownsStore {
     }
     return false;
   }
+
+  
 
 }
