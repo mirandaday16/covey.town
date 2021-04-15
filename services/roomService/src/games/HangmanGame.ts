@@ -116,7 +116,7 @@ export default class HangmanGame implements IGame {
 
 
   finishGame(winningPlayerID: string): string {
-    return `${winningPlayerID} won!\n${this.gameState}`;
+    return `${winningPlayerID} won!`;
   }
 
 

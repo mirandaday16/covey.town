@@ -44,8 +44,7 @@ export default class TTLGame implements IGame {
   }
 
   initializeGame(): string {
-    return `Your two truths and a lie options are:\nOption 1: ${this.option1}\nOption 2: ${this.option2}
-            \nOption 3: ${this.option3}\nGuess which is the lie!`;
+    return `Your two truths and a lie options are:\nOption 1: ${this.option1}\nOption 2: ${this.option2}\nOption 3: ${this.option3}\nGuess which is the lie!`;
   }
 
   move(move: TTLPlayer2Move): void {
@@ -58,14 +57,14 @@ export default class TTLGame implements IGame {
       this.finishGame(this.player2ID);
       return true;
     }
-    if (this.alreadyGuessed.length === 3) {
+    if (this.alreadyGuessed.length === 1) {
       this.finishGame(this.player1ID);
       return true;
     }  return false;
   }
 
   finishGame(winningPlayerID: string): string {
-    return `${winningPlayerID} won!\n${this.gameState}`;
+    return `${winningPlayerID} won!`;
   }
 
   playerJoin(player2ID: string, player2Username: string): void {
