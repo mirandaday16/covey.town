@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button, useDisclosure,
+  Button, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import Typography from "@material-ui/core/Typography";
 import TTLDisplay from "../GameDisplays/TTLDisplay";
@@ -15,6 +15,7 @@ import HangmanDisplay from "../GameDisplays/Hangman/HangmanDisplay";
 import useCoveyAppState from "../../../hooks/useCoveyAppState";
 import HangmanGame from "../gamesClient/HangmanGame";
 import TTLGame from "../gamesClient/TTLGame";
+import useMaybeVideo from "../../../hooks/useMaybeVideo";
 
 interface GameModalDialogProps {
   currentPlayer: {username: string, id: string},
@@ -26,26 +27,41 @@ interface GameModalDialogProps {
 
 export default function JoinGameModalDialog({currentPlayer, dialogType, gameId, gameType, player1}: GameModalDialogProps): JSX.Element {
   const {isOpen, onOpen, onClose} = useDisclosure();
-  const {gamesClient} = useCoveyAppState();
+  const { currentTownID, gamesClient } = useCoveyAppState();
   const [currentGameObject, setCurrentGameObject] = useState<TTLGame | HangmanGame | undefined>(undefined)
   const [playing, setPlaying] = useState(false);
+  const video = useMaybeVideo();
+
 
   const getCurrentGame = async () => {
-    setCurrentGameObject(await gamesClient.listGames()
+    setCurrentGameObject(await gamesClient.listGames({townID: currentTownID})
       .then(response => response.games.find(g => g.id === gameId)));
     setPlaying(true);
   }
 
 
+
   return (
     <>
-      <Button data-testid='openMenuButton' className="games-padded-asset" colorScheme="green" onClick={() => onOpen()}>
+      <Button data-testid='openMenuButton' className="games-padded-asset" colorScheme="green"
+              onClick={() => {
+                onOpen();
+                video?.pauseGame()}
+              }>
         <Typography variant="body1">Join Game</Typography>
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl" closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent>
+          <ModalCloseButton onClick={async () => {
+            if (currentGameObject !== undefined && currentGameObject.id !== "") {
+              await gamesClient.deleteGame({townID: currentTownID, gameId: currentGameObject.id});
+              setCurrentGameObject(undefined)
+              setPlaying(false)
+            }
+            video?.unPauseGame();
+          }} />
           {!playing &&
           <>
             {dialogType === "unavailable" &&
@@ -58,7 +74,7 @@ export default function JoinGameModalDialog({currentPlayer, dialogType, gameId, 
               Ready to Play?
             </ModalHeader>
             }
-            <ModalCloseButton/>
+
             {dialogType === "unavailable" &&
             <ModalBody>
               Looks like someone else joined this game before you. This game is no longer open.
@@ -74,6 +90,7 @@ export default function JoinGameModalDialog({currentPlayer, dialogType, gameId, 
               <Button className="games-padded-asset" colorScheme="green"
                       onClick={async () => {
                         await gamesClient.updateGame({
+                          townID: currentTownID,
                             gameId,
                             player2Id: currentPlayer.id,
                             player2Username: currentPlayer.username
@@ -97,7 +114,6 @@ export default function JoinGameModalDialog({currentPlayer, dialogType, gameId, 
                 <h1 className="games-headline">
                   {gameType === "ttl" ? "Two Truths and a Lie" : gameType}
                 </h1>
-                <ModalCloseButton/>
                 <hr/>
                 <p className="games-subhead">{currentGameObject.player1Username} vs. {currentGameObject.player2Username}</p>
                 <br/>
@@ -105,10 +121,10 @@ export default function JoinGameModalDialog({currentPlayer, dialogType, gameId, 
 
               <div className="games-border games-extra-padded">
                 {gameType === "ttl" &&
-                <TTLDisplay game={currentGameObject as TTLGame}/>
+                <TTLDisplay currentPlayerId={currentPlayer.id} startingGame={currentGameObject as TTLGame}/>
                 }
                 {gameType === "Hangman" &&
-                <HangmanDisplay game={currentGameObject as HangmanGame}/>
+                <HangmanDisplay currentPlayerId={currentPlayer.id} startingGame={currentGameObject as HangmanGame}/>
                 }
               </div>
             </>

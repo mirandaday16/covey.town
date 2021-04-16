@@ -14,20 +14,21 @@ import {
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
 import { ListItem } from '@material-ui/core';
-import {GameList} from "../gamesClient/GameTypes";
+import {GameList} from "../gamesClient/GameList";
 import JoinGameModalDialog from "./JoinGameModalDialog";
 import useCoveyAppState from "../../../hooks/useCoveyAppState";
+import useMaybeVideo from "../../../hooks/useMaybeVideo";
 
 
 export default function BrowseOpenGamesModal(props: {currentPlayer: {username: string, id: string}}): JSX.Element {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [gamesList, setGamesList] = useState<GameList>();
-  const { gamesClient } = useCoveyAppState();
+  const { currentTownID, gamesClient } = useCoveyAppState();
+  const video = useMaybeVideo()
 
   useEffect(() => {
     const fetchAllGames = async () => {
-      console.info("Fetching games")
-      const { games } = await gamesClient.listGames()
+      const { games } = await gamesClient.listGames({townID: currentTownID})
       setGamesList(games)
     }
     fetchAllGames()
@@ -40,17 +41,18 @@ export default function BrowseOpenGamesModal(props: {currentPlayer: {username: s
         clearInterval(timer);
       }
     }
-  },[])
-
-  console.log('Games:',gamesList)
+  },[gamesClient])
 
   return (
     <>
-      <MenuItem data-testid='openMenuButton' onClick={() => onOpen()}>
+      <MenuItem data-testid='openMenuButton' onClick={() => {
+        onOpen();
+        video?.pauseGame()}
+      }>
         <Typography variant="body1">Browse Open Games</Typography>
       </MenuItem>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
@@ -58,12 +60,13 @@ export default function BrowseOpenGamesModal(props: {currentPlayer: {username: s
           </ModalHeader>
           <ModalCloseButton onClick={() => {
             onClose();
+            video?.unPauseGame();
           }
           }/>
           <ModalBody>
             <UnorderedList>
               {gamesList?.map(game =>
-                <ListItem key={game.id}>Play {game.id.includes("ttl") ? "ttl" : "Hangman"} with {game.player1Username}
+                <ListItem key={game.id}>Play {game.id.includes("ttl") ? "Two Truths and a Lie" : "Hangman"} with {game.player1Username}
                   <div className="float-right">
                     <JoinGameModalDialog currentPlayer={props.currentPlayer}
                                          dialogType={game.player2ID === '' ? 'joining' : 'unavailable'}

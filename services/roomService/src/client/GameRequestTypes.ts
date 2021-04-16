@@ -1,4 +1,5 @@
-import { TTLPlayer1Move, TTLPlayer2Move, HangmanPlayer1Move, HangmanPlayer2Move, GameList } from './GameTypes';
+import { TTLPlayer1Move, TTLPlayer2Move, HangmanPlayer1Move, HangmanPlayer2Move } from './GameTypes';
+import { GameList } from './GameList';
 
 export interface ResponseEnvelope<T> {
   isOK: boolean;
@@ -7,6 +8,7 @@ export interface ResponseEnvelope<T> {
 }
 
 export interface GameCreateRequest {
+  townID: string;
   player1Id: string;
   player1Username: string;
   gameType: string;
@@ -21,6 +23,7 @@ export interface GameCreateResponse {
 }
 
 export interface GameUpdateRequest {
+  townID: string;
   gameId: string;
   player?: number;
   move?:  TTLPlayer1Move | TTLPlayer2Move | HangmanPlayer1Move | HangmanPlayer2Move;
@@ -29,7 +32,12 @@ export interface GameUpdateRequest {
 }
 
 export interface GameDeleteRequest {
+  townID: string;
   gameId: string;
+}
+
+export interface GameListRequest {
+  townID: string;
 }
 
 export interface GameListResponse {
