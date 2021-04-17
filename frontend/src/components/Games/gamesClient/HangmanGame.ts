@@ -91,35 +91,14 @@ export default class HangmanGame implements IGame {
     if (this.splitWord.find(e => e === move.letter)) {
       this.alreadyGuessed.push(move.letter);
       this.splitWord = this.splitWord.filter(letter => letter !== move.letter);
-      this.isGameOver();
       return 'Good job - you got a letter!';
     }
     this.alreadyGuessed.push(move.letter);
     const limb = this.limbList.pop();
-    this.isGameOver();
     if (limb !== undefined) {
       return this.limbToString(limb);
     }
     return '';
-  }
-
-
-  isGameOver(): boolean {
-    if (this.limbList.length === 0) {
-      this.finishGame(this.player1ID);
-      return true;
-    }
-    if (this.splitWord.length === 0) {
-      this.finishGame(this.player2ID);
-      return true;
-    }
-    return false;
-
-  }
-
-
-  finishGame(winningPlayerID: string): string {
-    return `${winningPlayerID} won!\n${this.gameState}`;
   }
 
 
