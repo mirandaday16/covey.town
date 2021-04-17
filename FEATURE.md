@@ -1,4 +1,4 @@
-# FEATURES
+# FEATURE
 
 Here are some helpful hints for deploying Covey.Town with the Covey.Town Games feature:
 
