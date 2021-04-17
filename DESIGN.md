@@ -69,6 +69,7 @@ Frontend:
     - CreateGameModalDialog.tsx: This is the modal that Player 1 will see when they choose to create a new game and when another player joins and they proceed to gameplay. It gives Player 1 the game creation options and prompts them to input the information needed for the game, and then displays a ‘Waiting for Player 2 to join’ message until another player in the town joins the game. Once a player joins, the modal changes to display to show the gameplay. Once the game is over the display switches to show a message saying which player won.
     - BrowseOpenGamesModal.tsx: This is the modal that any player will see when they choose the ‘Browse Games’ button in the town menu bar. This how Player 2 will join a game, as when they open this modal they will see a list of games that have been created by players in the town. Each listing will have the game type, the username of the player who created it, and a button to join the game. When a player clicks a join button, this will connect to the JoinGameModalDialog.
     - JoinGameModalDialog.tsx: This is the modal Player 2 will see after they confirm joining a game, and will be where their gameplay is. Depending on which game they join, they will either be taken to a TTL or Hangman game display and will be able to go through the game. Once the game is over the display switches to show a message saying which player won.
+
 ---
 
 ### CRC Cards for backend components:
@@ -89,4 +90,4 @@ Frontend:
 
 ![](./docs/JoinGameModalDialog.png)
 
-![](./docs/5500%20Final%20Project%20Diagram%20(1).pdf)
+![](./docs/5500%20Final%20Project%20Diagram.png)
