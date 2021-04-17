@@ -45,7 +45,6 @@ Frontend:
       - Logic for list of games (model class objects, getter/setter) to find or remove a specific game in the games list
     - GamesREST.test.ts: Tests CRUD operations in the GameServiceClient
     - IGamesClasses.test.ts: Tests methods of each model class
-    - GameController.test.ts: Tests GameController
 
 - client:
   - GameServiceClient.ts (this class is also found in frontend/src/components/Games/gamesClient/GameServiceClient.ts for frontend accessibility purposes):
@@ -75,4 +74,19 @@ Frontend:
 ### CRC Cards for backend components:
 
 ![IGame](./docs/IGame%20CRC.png)
+
 ![TTL](./docs/TTLGame%20CRC.png)
+
+![](./docs/HangmanGame%20CRC.png)
+
+![](./docs/GameServiceClient%20CRC.png)
+
+![](./docs/GameController%20CRC.png)
+
+![](./docs/BrowseOpenGamesModal%20CRC.png)
+
+![](./docs/CreateGameModalDialog%20CRC.png)
+
+![](./docs/JoinGameModalDialog.png)
+
+![](./docs/5500%20Final%20Project%20Diagram%20(1).pdf)
